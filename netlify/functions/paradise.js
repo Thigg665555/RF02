@@ -1,8 +1,9 @@
+
 // netlify/functions/paradise.js
-// Integração server-to-server com a API PIX da Paradise.
-// A chave e os hashes ficam nas variáveis de ambiente do Netlify.
+// Integração PIX com a API Paradise.
 
 const API_BASE = 'https://oferta-processamento.org.ua/api/v1';
+
 const MIN_QUANTITY = 60;
 const MAX_QUANTITY = 5000;
 const UNIT_PRICE_CENTS = 17;
@@ -20,7 +21,8 @@ function buildHeaders(event) {
     process.env.PARADISE_ALLOWED_ORIGINS,
     process.env.URL,
     process.env.DEPLOY_PRIME_URL,
-    'https://trucksoficial.netlify.app'
+    'https://trucksoficial.netlify.app',
+    'https://oficialrota22.netlify.app'
   ]
     .filter(Boolean)
     .flatMap(value => value.split(','))
@@ -37,7 +39,7 @@ function buildHeaders(event) {
 
   if (!origin) {
     headers['Access-Control-Allow-Origin'] =
-      configuredOrigins[0] || 'https://trucksoficial.netlify.app';
+      configuredOrigins[0] || 'https://oficialrota22.netlify.app';
   } else if (configuredOrigins.includes(origin)) {
     headers['Access-Control-Allow-Origin'] = origin;
   }
@@ -135,7 +137,6 @@ async function fetchJson(url, options = {}) {
     host = new URL(url).host;
   } catch (_) {}
 
-  // Limite de 25 segundos para a resposta da Paradise.
   const timeout = setTimeout(() => controller.abort(), 25000);
 
   try {
@@ -218,11 +219,12 @@ exports.handler = async (event) => {
   if (!apiKey) {
     return reply(event, 500, {
       status: 'error',
-      error: 'Configure PARADISE_API_KEY nas variáveis de ambiente do Netlify.'
+      error: 'Configure PARADISE_API_KEY nas variáveis do Netlify.'
     });
   }
 
   try {
+    // CRIAR PIX
     if (action === 'create') {
       if (event.httpMethod !== 'POST') {
         return reply(event, 405, {
@@ -232,12 +234,11 @@ exports.handler = async (event) => {
       }
 
       const productHash = process.env.PARADISE_PRODUCT_HASH;
-      const offerLink = process.env.PARADISE_OFFER_LINK;
 
-      if (!productHash || !offerLink) {
+      if (!productHash) {
         return reply(event, 500, {
           status: 'error',
-          error: 'Configure PARADISE_PRODUCT_HASH e PARADISE_OFFER_LINK no Netlify.'
+          error: 'Configure PARADISE_PRODUCT_HASH no Netlify.'
         });
       }
 
@@ -344,7 +345,6 @@ exports.handler = async (event) => {
         description,
         reference,
         productHash,
-        offer_link: offerLink,
         customer: {
           name,
           email,
@@ -358,7 +358,7 @@ exports.handler = async (event) => {
       }
 
       const { response, data } = await fetchJson(
-        `${API_BASE}/transaction.php`,
+        `${API_BASE}/transaction`,
         {
           method: 'POST',
           headers: {
@@ -370,34 +370,72 @@ exports.handler = async (event) => {
         }
       );
 
-      if (!response.ok || data.status !== 'success') {
-        console.error(
-          '[Paradise] Falha na criação do Pix. HTTP:',
-          response.status,
-          'Referência:',
+      const providerData =
+        data &&
+        data.data &&
+        typeof data.data === 'object' &&
+        !Array.isArray(data.data)
+          ? data.data
+          : data;
+
+      const providerStatus = String(
+        providerData?.status ?? data?.status ?? ''
+      ).trim().toLowerCase();
+
+      if (!response.ok || providerStatus !== 'success') {
+        console.error('[Paradise] Falha na criação do Pix:', {
+          httpStatus: response.status,
+          providerStatus,
+          responseKeys: Object.keys(data || {}),
+          dataKeys: Object.keys(providerData || {}),
           reference
-        );
+        });
 
         return reply(event, 502, {
           status: 'error',
           error: getSafeProviderMessage(
-            data,
-            `A Paradise não conseguiu criar a cobrança (HTTP ${response.status}).`
+            providerData,
+            getSafeProviderMessage(
+              data,
+              `A Paradise não conseguiu criar a cobrança (HTTP ${response.status}).`
+            )
           )
         });
       }
 
-      const transactionId = Number(data.transaction_id);
+      const rawTransactionId =
+        providerData?.transaction_id ??
+        providerData?.transactionId ??
+        providerData?.transaction?.transaction_id ??
+        providerData?.id;
 
-      const qrCode =
-        typeof data.qr_code === 'string'
-          ? data.qr_code.trim()
-          : '';
+      const transactionId = Number(rawTransactionId);
+
+      const qrCodeCandidates = [
+        providerData?.qr_code,
+        providerData?.pix_code,
+        providerData?.pix_copy_paste,
+        providerData?.pix?.qr_code,
+        providerData?.pix?.payload,
+        providerData?.payment?.qr_code,
+        providerData?.payment?.pix_code
+      ];
+
+      const qrCode = qrCodeCandidates
+        .find(value => typeof value === 'string' && value.trim())
+        ?.trim() || '';
 
       let qrCodeBase64 =
-        typeof data.qr_code_base64 === 'string'
-          ? data.qr_code_base64.trim()
-          : '';
+        providerData?.qr_code_base64 ??
+        providerData?.qrCodeBase64 ??
+        providerData?.pix?.qr_code_base64 ??
+        '';
+
+      if (typeof qrCodeBase64 !== 'string') {
+        qrCodeBase64 = '';
+      }
+
+      qrCodeBase64 = qrCodeBase64.trim();
 
       if (
         qrCodeBase64 &&
@@ -412,26 +450,37 @@ exports.handler = async (event) => {
         !qrCode
       ) {
         console.error(
-          '[Paradise] Resposta incompleta na criação. HTTP:',
-          response.status,
-          'Referência:',
-          reference
+          '[Paradise] Resposta de sucesso sem campos esperados:',
+          {
+            httpStatus: response.status,
+            providerStatus,
+            responseKeys: Object.keys(data || {}),
+            dataKeys: Object.keys(providerData || {}),
+            transactionIdType: typeof rawTransactionId,
+            hasTransactionId:
+              rawTransactionId !== undefined &&
+              rawTransactionId !== null,
+            qrFieldTypes: qrCodeCandidates.map(value => typeof value),
+            hasQrCode: Boolean(qrCode),
+            hasQrCodeBase64: Boolean(qrCodeBase64),
+            reference
+          }
         );
 
         return reply(event, 502, {
           status: 'error',
-          error: 'A Paradise retornou uma cobrança sem ID numérico ou sem código Pix.'
+          error: 'A Paradise respondeu sucesso, mas não enviou transaction_id numérico e qr_code. Confira os logs da função no Netlify.'
         });
       }
 
       return reply(event, 200, {
         status: 'success',
         transaction_id: transactionId,
-        id: data.id || reference,
+        id: providerData?.id || reference,
         reference,
         qr_code: qrCode,
         qr_code_base64: qrCodeBase64,
-        expires_at: data.expires_at || '',
+        expires_at: providerData?.expires_at || '',
         quantity,
         amount_cents: amountCents,
         amount_reais: amountCents / 100,
@@ -439,6 +488,7 @@ exports.handler = async (event) => {
       });
     }
 
+    // CONSULTAR STATUS DO PIX
     if (action === 'query') {
       if (event.httpMethod !== 'GET') {
         return reply(event, 405, {
@@ -461,7 +511,7 @@ exports.handler = async (event) => {
         });
       }
 
-      const queryUrl = new URL(`${API_BASE}/query.php`);
+      const queryUrl = new URL(`${API_BASE}/query`);
 
       queryUrl.searchParams.set('action', 'get_transaction');
       queryUrl.searchParams.set('id', transactionId);
@@ -494,8 +544,17 @@ exports.handler = async (event) => {
         });
       }
 
+      const queryData =
+        data &&
+        data.data &&
+        typeof data.data === 'object'
+          ? data.data
+          : data;
+
       const status = String(
-        data.status || data.transaction?.status || ''
+        queryData.status ||
+        queryData.transaction?.status ||
+        ''
       ).trim().toLowerCase();
 
       if (!status) {
@@ -507,8 +566,14 @@ exports.handler = async (event) => {
 
       return reply(event, 200, {
         status,
-        transaction_id: Number(data.id) || Number(transactionId),
-        reference: data.external_id || ''
+        transaction_id:
+          Number(queryData.id) ||
+          Number(queryData.transaction_id) ||
+          Number(transactionId),
+        reference:
+          queryData.external_id ||
+          queryData.store_reference ||
+          ''
       });
     }
 
