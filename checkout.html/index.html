@@ -348,13 +348,6 @@ try { window.meta_checkout_page_ic = true; } catch(e) {}
     if (statusBar) statusBar.textContent = success ? 'Pagamento aprovado!' : text;
   }
 
-  function metaPurchase() {
-    if (window.fbq && !sessionStorage.getItem('meta_purchase_sent')) {
-      var value = Number(String(pedido.total || '').replace(/R\$\s*/i,'').replace(/\./g,'').replace(',','.')) || 0;
-      window.fbq('track', 'Purchase', {value: value, currency: 'BRL'});
-      sessionStorage.setItem('meta_purchase_sent', '1');
-    }
-  }
 
   // Usa a expiração real retornada pela Paradise; mantém 14:50 como fallback.
   var fallbackSeconds = 14 * 60 + 50;
@@ -388,7 +381,6 @@ try { window.meta_checkout_page_ic = true; } catch(e) {}
         if (warning) warning.innerHTML = '<i class="bi bi-check-circle-fill"></i> Pagamento confirmado. Seu pedido foi registrado com sucesso.';
         var timer = document.querySelector('.pix-timer-wrap');
         if (timer) timer.style.display = 'none';
-        metaPurchase();
         setTimeout(function () {
           window.location.href = 'https://oficialrota22.netlify.app/poscompra/';
         }, 2500);
