@@ -3,7 +3,6 @@
 
 // netlify/functions/paradise.js
 // Integração PIX TriboPay — Rota 22 Premiações
-// Mantém compatibilidade com index.html e checkout.html.
 
 const API_BASE = 'https://api.tribopay.com.br/api/public/v1';
 
@@ -111,8 +110,6 @@ function calculateAmountCents(quantity) {
   let remaining = quantity;
   let discountCents = 0;
 
-  // Descontos cumulativos: 500, depois 200 e depois 100.
-
   for (const tier of DISCOUNT_TIERS) {
     const bundles = Math.floor(remaining / tier.quantity);
 
@@ -134,9 +131,7 @@ function formatBrazilianAmount(cents) {
 
 function makeApiUrl(path, apiToken) {
   const url = new URL(`${API_BASE}${path}`);
-
   url.searchParams.set('api_token', apiToken);
-
   return url.toString();
 }
 
@@ -191,7 +186,6 @@ async function fetchJson(url, options = {}) {
       );
 
       timeoutError.name = 'AbortError';
-
       throw timeoutError;
     }
 
@@ -249,13 +243,33 @@ function providerMessage(data, fallback) {
 
   const value = firstValue(objects, [
     'message',
-    'error',
-    'detail'
+    'error.message',
+    'errors.0.message',
+    'detail',
+    'error_description',
+    'error'
   ]);
 
-  return typeof value === 'string' && value.trim()
-    ? value.trim().slice(0, 240)
-    : fallback;
+  if (typeof value === 'string' && value.trim()) {
+    return value.trim().slice(0, 240);
+  }
+
+  return fallback;
+}
+
+function providerErrorCode(data) {
+  const objects = getProviderObjects(data);
+
+  const value = firstValue(objects, [
+    'code',
+    'error_code',
+    'error.code',
+    'errors.0.code'
+  ]);
+
+  return (typeof value === 'string' || typeof value === 'number')
+    ? String(value).slice(0, 100)
+    : '';
 }
 
 function normalizePaymentStatus(value) {
@@ -372,9 +386,7 @@ async function createPix(event, config) {
   // Conferimos o total com a mesma regra de descontos da página.
 
   const amountCentsFromPage = Math.round(amountReais * 100);
-
-  const expectedAmountCents =
-    calculateAmountCents(quantity);
+  const expectedAmountCents = calculateAmountCents(quantity);
 
   if (
     !Number.isFinite(amountReais) ||
@@ -463,8 +475,7 @@ async function createPix(event, config) {
   }
 
   if (process.env.TRIBOPAY_POSTBACK_URL) {
-    payload.postback_url =
-      process.env.TRIBOPAY_POSTBACK_URL;
+    payload.postback_url = process.env.TRIBOPAY_POSTBACK_URL;
   }
 
   const { response, data } = await fetchJson(
@@ -482,8 +493,15 @@ async function createPix(event, config) {
   const objects = getProviderObjects(data);
 
   if (!response.ok) {
+    const apiMessage = providerMessage(
+      data,
+      `A TriboPay não conseguiu criar a cobrança (HTTP ${response.status}).`
+    );
+
     console.error('[TriboPay] Falha ao criar PIX:', {
       httpStatus: response.status,
+      providerCode: providerErrorCode(data),
+      providerMessage: apiMessage,
       responseKeys:
         data && typeof data === 'object'
           ? Object.keys(data)
@@ -493,10 +511,7 @@ async function createPix(event, config) {
 
     return reply(event, 502, {
       status: 'error',
-      error: providerMessage(
-        data,
-        `A TriboPay não conseguiu criar a cobrança (HTTP ${response.status}).`
-      )
+      error: apiMessage
     });
   }
 
@@ -540,8 +555,7 @@ async function createPix(event, config) {
     qrCodeBase64 &&
     !qrCodeBase64.startsWith('data:image/')
   ) {
-    qrCodeBase64 =
-      `data:image/png;base64,${qrCodeBase64}`;
+    qrCodeBase64 = `data:image/png;base64,${qrCodeBase64}`;
   }
 
   const expiresAt = String(
@@ -616,8 +630,7 @@ async function createPix(event, config) {
     quantity,
     amount_cents: amountCents,
     amount_reais: amountCents / 100,
-    amount_reais_formatted:
-      formatBrazilianAmount(amountCents)
+    amount_reais_formatted: formatBrazilianAmount(amountCents)
   });
 }
 
@@ -664,6 +677,8 @@ async function queryPix(event, config) {
   if (!response.ok) {
     console.error('[TriboPay] Falha na consulta:', {
       httpStatus: response.status,
+      providerCode: providerErrorCode(data),
+      providerMessage: providerMessage(data, ''),
       transactionHash
     });
 
@@ -747,7 +762,10 @@ exports.handler = async (event) => {
 
     console.error('[TriboPay] Erro interno:', {
       name: error?.name || 'Error',
-      message: error?.message || 'Falha desconhecida'
+      message: error?.message || 'Falha desconhecida',
+      stack: typeof error?.stack === 'string'
+        ? error.stack.split('\n').slice(0, 8).join('\n')
+        : ''
     });
 
     return reply(
