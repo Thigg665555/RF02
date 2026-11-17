@@ -2864,7 +2864,56 @@ $(document).ready(function () {
 </div>
 </div>
 </div>
-<script src="js/jquery.inputmask.min.js"></script>
+<script>
+/* Máscaras leves para telefone/CPF. Substitui o Inputmask externo que estava
+   lançando TypeError no celular e interrompendo eventos de digitação. */
+(function ($) {
+  if (!$ || !$.fn) return;
+
+  function onlyDigits(value, limit) {
+    return String(value || '').replace(/\D/g, '').slice(0, limit);
+  }
+
+  function formatPhone(value) {
+    const d = onlyDigits(value, 11);
+    if (!d) return '';
+    if (d.length <= 2) return '(' + d;
+    if (d.length <= 7) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+  }
+
+  function formatCpf(value) {
+    const d = onlyDigits(value, 11);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return d.slice(0, 3) + '.' + d.slice(3);
+    if (d.length <= 9) return d.slice(0, 3) + '.' + d.slice(3, 6) + '.' + d.slice(6);
+    return d.slice(0, 3) + '.' + d.slice(3, 6) + '.' + d.slice(6, 9) + '-' + d.slice(9);
+  }
+
+  // Mantém a sintaxe já usada no restante do index, sem depender do plugin antigo.
+  $.fn.inputmask = function (pattern) {
+    const isCpf = String(pattern || '').indexOf('999.999.999-99') !== -1;
+    return this.each(function () {
+      const input = this;
+      const type = isCpf ? 'cpf' : 'phone';
+      if (input.__rota22MaskHandler) {
+        input.removeEventListener('input', input.__rota22MaskHandler);
+      }
+      const formatter = type === 'cpf' ? formatCpf : formatPhone;
+      input.__rota22MaskHandler = function () {
+        const before = input.value;
+        const formatted = formatter(before);
+        if (formatted !== before) {
+          input.value = formatted;
+          try { input.setSelectionRange(formatted.length, formatted.length); } catch (_) {}
+        }
+      };
+      input.addEventListener('input', input.__rota22MaskHandler);
+      input.__rota22MaskHandler();
+    });
+  };
+})(window.jQuery);
+</script>
 <style>
 /* Modal em si */
 #modal-checkout {
