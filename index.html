@@ -124,30 +124,128 @@ a{color:inherit;text-decoration:none}
 .facebook{background:#3d5f9c}.telegram{background:#229ed9}.twitter{background:#129bd1}.whatsapp{background:#138d55}
 .share-links svg{width:14px;height:14px;fill:currentColor}
 .toast{position:fixed;z-index:100;bottom:15px;left:50%;transform:translateX(-50%);background:#202020;color:#fff;border-radius:4px;padding:9px 12px;font-size:11px;display:none;max-width:90%;text-align:center}
-.modal-bg{display:none;position:fixed;z-index:90;inset:0;background:rgba(0,0,0,.58);align-items:center;justify-content:center;padding:0}
+/* Modal de checkout: janela central, independente do tamanho da tela */
+.modal-bg{display:none;position:fixed;z-index:90;inset:0;background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:16px;overscroll-behavior:contain}
 .modal-bg.show{display:flex}
-.modal{width:min(450px,100%);height:100%;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;background:#fff;padding:0 12px 9px;text-align:left;box-shadow:0 10px 40px #0005;color:#222}
-.modal-topline{height:1px;background:#e1e1e1;margin:13px -12px 11px}
-.modal-intro{font-size:11px;line-height:14px;color:#666;margin:0 0 15px;font-weight:400}
-.checkout-field{margin:0 0 6px}
-.checkout-field label{display:block;color:#666;font-size:11px;line-height:13px;margin:0 0 4px}
-.checkout-field input{display:block;width:100%;height:29px;border:1px solid #cbd4dd;border-radius:6px;background:#fff;padding:0 10px;color:#333;font:12px Arial,Helvetica,sans-serif;outline:none;box-shadow:inset 0 1px 1px rgba(0,0,0,.02)}
+.modal{position:relative;width:min(100%,430px);height:auto;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;padding:16px 16px 15px;text-align:left;box-shadow:0 14px 44px rgba(0,0,0,.32);color:#222}
+.modal-close{position:absolute;top:10px;right:12px;width:34px;height:34px;border-radius:50%;background:#f0f2f3;color:#333;font-size:25px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+.modal-close:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.modal-topline{height:1px;background:#e1e1e1;margin:22px 0 15px}
+.modal-intro{font-size:16px;line-height:1.3;color:#222;margin:0 38px 17px 0;font-weight:700}
+.checkout-field{margin:0 0 11px}
+.checkout-field label{display:block;color:#555;font-size:13px;line-height:16px;margin:0 0 5px;font-weight:600}
+.checkout-field input{display:block;width:100%;height:44px;border:1px solid #cbd4dd;border-radius:8px;background:#fff;padding:0 12px;color:#333;font:16px Arial,Helvetica,sans-serif;outline:none;box-shadow:inset 0 1px 1px rgba(0,0,0,.02)}
 .checkout-field input::placeholder{color:#89939e;opacity:1}
-.checkout-field input:focus{border-color:#168d52;box-shadow:0 0 0 2px rgba(22,141,82,.1)}
-.upsell-list{display:flex;flex-direction:column;gap:9px;margin:7px 0 16px}
-.upsell-card{height:87px;min-height:87px;background:#1d1d1d;border-radius:9px;padding:8px;display:flex;align-items:center;gap:8px;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.26)}
-.upsell-image{width:55px;height:55px;flex:0 0 55px;object-fit:cover;border-radius:7px;background:#fff}
-.upsell-content{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;height:100%}
-.upsell-title{font-size:9px;line-height:11px;font-weight:700;color:#fff;margin:0 0 3px}
-.upsell-description{font-size:7px;line-height:9px;color:#c3c3c3;margin:0 0 4px}
-.upsell-add{width:100%;height:20px;min-height:20px;border-radius:5px;background:#159e68;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 7px;font-size:7px;line-height:9px;font-weight:800;text-align:left}
+.checkout-field input:focus{border-color:#168d52;box-shadow:0 0 0 3px rgba(22,141,82,.12)}
+.upsell-list{display:flex;flex-direction:column;gap:10px;margin:13px 0 16px}
+.upsell-card{height:auto;min-height:104px;background:#1d1d1d;border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+.upsell-image{width:62px;height:62px;flex:0 0 62px;object-fit:cover;border-radius:7px;background:#fff}
+.upsell-content{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center}
+.upsell-title{font-size:12px;line-height:15px;font-weight:700;color:#fff;margin:0 0 4px}
+.upsell-description{font-size:10px;line-height:13px;color:#d0d0d0;margin:0 0 7px}
+.upsell-add{width:100%;height:32px;min-height:32px;border-radius:6px;background:#159e68;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:10px;line-height:13px;font-weight:800;text-align:left}
 .upsell-add.selected{background:#0a754c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
-.upsell-add span:last-child{white-space:nowrap;font-size:8px}
-.checkout-continue{display:block;width:100%;height:38px;border-radius:6px;background:#188b55;color:#fff;font-size:13px;font-weight:700;margin:0 0 0;padding:0}
-.checkout-feedback{display:none;margin:9px 0 0;padding:8px;border-radius:5px;background:#fff4e5;color:#80521b;font-size:10px;line-height:14px}
+.upsell-add span:last-child{white-space:nowrap;font-size:10px}
+.checkout-continue{display:block;width:100%;height:48px;border-radius:8px;background:#188b55;color:#fff;font-size:15px;font-weight:700;margin:0;padding:0}
+.checkout-feedback{display:none;margin:10px 0 0;padding:10px;border-radius:6px;background:#fff4e5;color:#80521b;font-size:12px;line-height:16px}
 .checkout-feedback.show{display:block}
-@media (min-width:480px){.modal-bg{padding:18px}.modal{height:auto;max-height:calc(100dvh - 36px);border-radius:8px;padding-left:12px;padding-right:12px}}
 @media(max-width:450px){.page{margin-top:0;border-radius:0}.hero{aspect-ratio:450/255}.topbar-inner{padding-right:10px}}
+
+/* Ajustes de leitura e toque para celulares */
+@media(max-width:600px){
+  body{font-size:14px;overflow-x:hidden}
+  .page{width:100%;max-width:none;min-height:100vh;min-height:100svh;padding-bottom:20px;border-radius:0}
+  .hero{aspect-ratio:1.72/1;min-height:215px}
+  .hero-caption{left:12px;right:12px;bottom:12px}
+  .hero-tag{font-size:10px;padding:4px 7px;margin-bottom:5px}
+  .hero-caption h1{font-size:clamp(15px,4.1vw,19px);line-height:1.18;margin-bottom:4px}
+  .hero-caption p{font-size:12px;line-height:1.25}
+  .hero-arrow{width:36px;height:44px;font-size:36px}
+  .my-tickets{height:40px;font-size:14px;gap:8px}
+  .my-tickets svg{width:16px;height:16px}
+  .price-row{height:auto;min-height:42px;flex-wrap:wrap;gap:7px 16px;padding:7px 8px;font-size:12px}
+  .draw-date{font-size:11px;padding:4px 6px}
+  .unit-price{font-size:13px;padding:5px 8px}
+  .promo{padding:0 12px}
+  .promo-heading{height:32px;gap:7px}
+  .promo-heading .emoji{font-size:16px}
+  .promo-heading strong{font-size:16px}
+  .promo-heading span:last-child{font-size:11px}
+  .discount-panel{height:auto;min-height:44px;gap:7px;padding:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+  .discount-panel::-webkit-scrollbar{display:none}
+  .discount-pill{height:27px;flex:0 0 auto;padding:0 9px;font-size:10px}
+  .multiplier{height:auto;min-height:100px;margin:12px 12px 7px;padding:10px 9px 8px;border-radius:7px}
+  .multiplier h2{font-size:16px;line-height:20px;margin-bottom:7px}
+  .timer-bar{height:30px;font-size:12px}
+  .multiplier p{font-size:11px;line-height:14px;margin-top:7px}
+  .multiplier .valid{font-size:10px;line-height:12px}
+  .info-note{height:auto;min-height:28px;margin:7px 12px 6px;padding:5px 8px;font-size:11px;line-height:15px}
+  .quantity-box{height:54px;margin:0 12px;padding:0 12px;gap:10px}
+  .clear-qty,.qty-minus,.qty-plus{width:26px;height:26px;flex:0 0 26px;font-size:18px;line-height:1}
+  .qty-value{height:38px;font-size:16px}
+  .quick{height:58px;margin:7px 12px 5px;gap:7px}
+  .quick .amount{font-size:21px;line-height:24px}
+  .quick small{font-size:9px;line-height:12px}
+  .popular-label{font-size:9px;line-height:12px;padding:2px 8px}
+  .buy-wrap{margin:0 12px 14px}
+  .buy{height:60px;padding:0 12px;border-radius:7px}
+  .buy-left{gap:10px}
+  .buy-icon{height:25px;width:25px;font-size:20px}
+  .buy-label{font-size:16px;line-height:18px}
+  .buy-label small{font-size:10px;line-height:13px}
+  .total{font-size:10px;line-height:13px}
+  .total strong{font-size:15px;line-height:18px}
+  .description{margin:0 12px 10px}
+  .description-head{height:38px;font-size:13px}
+  .description-head .small-icon{width:16px;height:16px;font-size:11px}
+  .description-text{min-height:36px;padding:9px 10px;font-size:13px;line-height:17px}
+  .description-extra{padding:0 10px 10px;font-size:12px;line-height:1.5}
+  .tickets-section{padding:0 12px}
+  .tickets-heading{height:32px;gap:7px}
+  .tickets-heading .trophy{font-size:15px}
+  .tickets-heading strong{font-size:16px}
+  .tickets-heading .subtitle,.tickets-heading .counter{font-size:11px}
+  .ticket{height:34px;min-height:34px;grid-template-columns:minmax(64px,.8fr) 1fr minmax(76px,.8fr);padding:0 6px;font-size:11px}
+  .ticket-number{min-width:58px;padding:3px 6px;font-size:10px;line-height:15px}
+  .ticket-prize,.ticket-status{font-size:11px}
+  .more-tickets{height:34px;margin-top:5px;font-size:11px}
+  .share-section{padding:10px 12px 4px}
+  .share-title{height:28px;font-size:16px}
+  .share-title span{font-size:16px}
+  .share-links{gap:10px;padding-top:3px}
+  .share-links a{width:30px;height:30px;font-size:18px}
+  .share-links svg{width:18px;height:18px}
+  .modal-bg{padding:12px}
+  .modal{width:min(100%,430px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);padding:15px 14px 14px;border-radius:14px}
+  .modal-close{top:8px;right:9px;width:36px;height:36px;font-size:26px}
+  .modal-topline{margin:24px 0 14px}
+  .modal-intro{font-size:16px;line-height:21px;margin:0 40px 16px 0}
+  .checkout-field{margin-bottom:10px}
+  .checkout-field label{font-size:13px;line-height:16px;margin-bottom:5px}
+  .checkout-field input{height:44px;font-size:16px}
+  .upsell-list{gap:9px;margin:12px 0 14px}
+  .upsell-card{min-height:100px;padding:9px;gap:9px}
+  .upsell-image{width:58px;height:58px;flex-basis:58px}
+  .upsell-title{font-size:11px;line-height:14px}
+  .upsell-description{font-size:9px;line-height:12px;margin-bottom:6px}
+  .upsell-add{height:31px;min-height:31px;font-size:9px;line-height:12px;padding:0 7px}
+  .upsell-add span:last-child{font-size:9px}
+  .checkout-continue{height:48px;font-size:15px}
+}
+@media(max-width:360px){
+  .price-row{gap:6px 9px;font-size:11px}
+  .hero-caption h1{font-size:15px}
+  .ticket{grid-template-columns:60px 1fr 70px;padding:0 4px}
+  .ticket-number{min-width:54px;font-size:9px}
+  .ticket-prize,.ticket-status{font-size:10px}
+  .modal-bg{padding:8px}
+  .modal{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);padding-left:12px;padding-right:12px}
+  .upsell-image{width:52px;height:52px;flex-basis:52px}
+  .upsell-title{font-size:10px;line-height:13px}
+  .upsell-description{font-size:8px;line-height:11px}
+  .upsell-add{font-size:8px;padding:0 6px}
+  .upsell-add span:last-child{font-size:8px}
+}
 </style>
 </head>
 <body>
@@ -221,6 +319,7 @@ a{color:inherit;text-decoration:none}
 </main>
 <div class="modal-bg" id="modal" aria-hidden="true">
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalIntro">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Fechar formulário">×</button>
     <div class="modal-topline"></div>
     <p class="modal-intro" id="modalIntro">Complete seus dados para continuar</p>
     <form id="checkoutForm" novalidate>
@@ -296,6 +395,7 @@ const endTime=new Date('2026-11-27T01:00:00-03:00').getTime();
 function updateCountdown(){let remaining=Math.max(0,endTime-Date.now());const hours=Math.floor(remaining/3600000);const minutes=Math.floor((remaining%3600000)/60000);const seconds=Math.floor((remaining%60000)/1000);document.getElementById('countdown').textContent=[hours,minutes,seconds].map(v=>String(v).padStart(2,'0')).join(':');}
 setSlide(0);renderQuantity();renderTickets();updateCountdown();window.setInterval(updateCountdown,1000);
 document.getElementById('modal').addEventListener('click',event=>{if(event.target.id==='modal')closeModal();});
+document.getElementById('modalClose').addEventListener('click',closeModal);
 document.getElementById('checkoutForm').addEventListener('submit',continueCheckout);
 document.getElementById('buyerCpf').addEventListener('input',event=>{event.target.value=maskCPF(event.target.value);event.target.setCustomValidity('');});
 ['buyerPhone','buyerPhoneConfirm'].forEach(id=>document.getElementById(id).addEventListener('input',event=>{event.target.value=maskPhone(event.target.value);event.target.setCustomValidity('');}));
