@@ -1,20 +1,20 @@
-
 'use strict';
 
-// netlify/functions/paradise.js
-// Integração PIX TriboPay — Rota 22 Premiações
+// netlify/functions/tribopay.js
+// Integração PIX TriboPay — Campanha Rural Brutos
 
 const API_BASE = 'https://api.tribopay.com.br/api/public/v1';
 
-const MIN_QUANTITY = 60;
-const MAX_QUANTITY = 5000;
-const UNIT_PRICE_CENTS = 17;
+const MIN_QUANTITY = 40;
+const MAX_QUANTITY = 10000;
 
-const DISCOUNT_TIERS = [
-  { quantity: 500, discountCents: 3500 },
-  { quantity: 200, discountCents: 1200 },
-  { quantity: 100, discountCents: 500 }
-];
+// Mesma regra exibida na página da campanha. Valores em centavos.
+function campaignBaseAmountCents(quantity) {
+  if (quantity >= 500) return 10000;
+  if (quantity >= 300) return 5000;
+  if (quantity >= 100) return 2000;
+  return quantity * 29;
+}
 
 const REQUEST_TIMEOUT_MS = 25000;
 
@@ -25,8 +25,8 @@ function buildHeaders(event) {
     process.env.TRIBOPAY_ALLOWED_ORIGINS,
     process.env.URL,
     process.env.DEPLOY_PRIME_URL,
-    'https://trucksoficial.netlify.app',
-    'https://oficialrota22.netlify.app'
+    'https://ruralbrutos.com',
+    'https://www.ruralbrutos.com'
   ]
     .filter(Boolean)
     .flatMap(value => value.split(','))
@@ -106,20 +106,8 @@ function isValidCpf(value) {
   return true;
 }
 
-function calculateAmountCents(quantity) {
-  let remaining = quantity;
-  let discountCents = 0;
-
-  for (const tier of DISCOUNT_TIERS) {
-    const bundles = Math.floor(remaining / tier.quantity);
-
-    if (bundles > 0) {
-      discountCents += bundles * tier.discountCents;
-      remaining -= bundles * tier.quantity;
-    }
-  }
-
-  return quantity * UNIT_PRICE_CENTS - discountCents;
+function calculateAmountCents(quantity, phoneUpsell, carUpsell) {
+  return campaignBaseAmountCents(quantity) + (phoneUpsell ? 1700 : 0) + (carUpsell ? 2200 : 0);
 }
 
 function formatBrazilianAmount(cents) {
@@ -344,6 +332,8 @@ async function createPix(event, config) {
   const document = digits(body.document);
 
   const quantity = Number(body.quantity);
+  const phoneUpsell = body.phoneUpsell === true;
+  const carUpsell = body.carUpsell === true;
   const amountReais = Number(body.amount);
 
   if (
@@ -386,7 +376,8 @@ async function createPix(event, config) {
   // Conferimos o total com a mesma regra de descontos da página.
 
   const amountCentsFromPage = Math.round(amountReais * 100);
-  const expectedAmountCents = calculateAmountCents(quantity);
+  const expectedAmountCents = calculateAmountCents(quantity, phoneUpsell, carUpsell);
+  const finalQuantity = quantity + (phoneUpsell ? 100 : 0) + (carUpsell ? 200 : 0);
 
   if (
     !Number.isFinite(amountReais) ||
@@ -419,7 +410,7 @@ async function createPix(event, config) {
 
   const description =
     cleanText(body.description, 120) ||
-    'Cotas Rota 22 Premiações';
+    'Cotas John Deere 8400R + DB60 ou 2 Milhões';
 
   const trackingInput =
     body.tracking && typeof body.tracking === 'object'
@@ -461,7 +452,7 @@ async function createPix(event, config) {
     cart: [
       {
         product_hash: config.productHash,
-        title: description,
+        title: `${description} — ${finalQuantity} cotas`,
         price: amountCents,
         quantity: 1,
         operation_type: 1,
@@ -627,7 +618,7 @@ async function createPix(event, config) {
     qr_code: qrCode,
     qr_code_base64: qrCodeBase64,
     expires_at: expiresAt,
-    quantity,
+    quantity: finalQuantity,
     amount_cents: amountCents,
     amount_reais: amountCents / 100,
     amount_reais_formatted: formatBrazilianAmount(amountCents)
