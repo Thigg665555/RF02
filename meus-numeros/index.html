@@ -85,7 +85,9 @@
     }
     .menu-panel.open { display: block; }
     .menu-panel a {
-      display: block;
+      display: flex;
+      align-items: center;
+      min-height: 42px;
       padding: 9px 12px;
       color: #ffffff;
       font-size: 11px;
@@ -456,9 +458,8 @@
         </svg>
       </button>
     </div>
-    <nav class="menu-panel" id="menuPanel" aria-label="Menu da campanha">
-      <a href="/minhas-compras">Minhas Compras</a>
-      <a href="/campanhas">Campanhas</a>
+    <nav class="menu-panel" id="menuPanel" aria-label="Navegação">
+      <a href="/">Página principal</a>
       <a href="/ganhadores">Ganhadores</a>
     </nav>
   </header>
