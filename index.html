@@ -34,8 +34,17 @@ a{color:inherit;text-decoration:none}
 .topbar{position:fixed;z-index:50;top:0;left:0;width:100%;height:40px;background:#111}
 .topbar-inner{width:min(450px,100%);height:40px;margin:auto;display:flex;align-items:center;justify-content:flex-end;padding:0 10px}
 .menu-button{width:22px;height:30px;background:transparent;color:#ddd;padding:0;display:flex;align-items:center;justify-content:center}.menu-button svg{width:17px;height:17px;display:block;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round}
-.menu-panel{display:none;position:absolute;right:max(calc((100vw - 450px)/2 + 8px),8px);top:37px;background:#171717;color:#fff;padding:9px 12px;border-radius:3px;box-shadow:0 3px 10px #0004;font-size:11px}
+.menu-panel{display:none;position:fixed;z-index:1000;inset:0;overflow-y:auto;background:#111;color:#fff;padding:calc(46px + env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));}
 .menu-panel.open{display:block}
+.menu-content{position:relative;width:min(380px,100%);margin:0 auto;padding-top:3px}
+.menu-close{position:absolute;top:calc(-45px - env(safe-area-inset-top));right:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#f5f5f5;font-size:25px;line-height:1;border-radius:4px}
+.menu-close:focus-visible,.menu-panel a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.menu-items{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.menu-items a{display:flex;align-items:center;gap:11px;min-height:22px;padding:1px 0;color:#f5f5f5;text-decoration:none;font-size:13px;line-height:18px;font-weight:500}
+.menu-items svg{width:13px;height:13px;flex:0 0 13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.menu-login{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:34px;margin-top:20px;border-radius:12px;background:#fff;color:#222;font-size:14px;font-weight:500;text-decoration:none}
+.menu-login svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.menu-open{overflow:hidden}
 .top-gap{height:6px;background:#111;width:100%}
 .page{width:min(450px,100%);margin:0 auto;background:var(--page);min-height:calc(100vh - 46px);padding-bottom:13px;overflow:hidden;border-radius:0 0 11px 11px}
 /* Capa */
@@ -249,7 +258,25 @@ a{color:inherit;text-decoration:none}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-inner"><button class="menu-button" id="menuButton" aria-label="Abrir menu"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14"/></svg></button></div><div class="menu-panel" id="menuPanel">Menu da campanha</div></header>
+<header class="topbar"><div class="topbar-inner"><button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuPanel"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14"/></svg></button></div><nav class="menu-panel" id="menuPanel" aria-label="Menu principal" aria-hidden="true">
+  <div class="menu-content">
+    <button class="menu-close" id="menuClose" type="button" aria-label="Fechar menu">×</button>
+    <div class="menu-items">
+      <a href="/meus-numeros">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4zM8 6.5v11M16 6.5v11M4 10.2h16M4 13.8h16"/></svg>
+        <span>Minhas Compras</span>
+      </a>
+      <a href="/ganhadores">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-7 0v-3h6v3"/></svg>
+        <span>Ganhadores</span>
+      </a>
+    </div>
+    <a class="menu-login" href="/meus-numeros">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h5v16h-5M10 8l4 4-4 4M14 12H3"/></svg>
+      <span>Entrar</span>
+    </a>
+  </div>
+</nav></header>
 <div class="top-gap" aria-hidden="true"></div>
 <main class="page">
   <section class="hero" aria-label="Imagens da campanha">
@@ -259,10 +286,10 @@ a{color:inherit;text-decoration:none}
     <button class="hero-arrow next" aria-label="Próxima imagem" onclick="moveSlide(1)">›</button>
     <div class="hero-caption"><span class="hero-tag">Adquira Já!</span><h1>VOLVO FH 540 + RODOTREM GRANELEIRO OU 1 MILHÃO</h1><p>Participe Agora!</p></div>
   </section>
-  <button class="my-tickets" onclick="document.getElementById('tickets').scrollIntoView({behavior:'smooth',block:'start'})">
+  <a class="my-tickets" href="/meus-numeros" aria-label="Abrir Minhas Compras">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 2H1v2h2l3.6 7.6-1.35 2.45A2 2 0 0 0 7 17h12v-2H7l1.1-2h7.45a2 2 0 0 0 1.75-1.03L21 5H5.2L4.27 3H3V2Z"/></svg>
     Meus Bilhetes
-  </button>
+  </a>
   <div class="price-row">
     <div class="price-group"><span>Sorteio</span><span class="draw-date">29/11/2026 20:00</span></div>
     <div class="price-group"><span>Por apenas</span><strong class="unit-price">R$ 0,29</strong></div>
@@ -390,7 +417,15 @@ function toggleTickets(){showAllTickets=!showAllTickets;renderTickets();}
 const ticketNumbers=['0000000','1111111','2222222','3333333','4444444','5555555','6666666','7777777','8888888','9999999'];
 function renderTickets(){const visible=showAllTickets?ticketNumbers:ticketNumbers.slice(0,4);document.getElementById('ticketList').innerHTML=visible.map(number=>`<div class="ticket"><span class="ticket-number">${number}</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Disponível</span></div>`).join('');document.getElementById('moreTickets').textContent=showAllTickets?'↑ Ver menos':'↓ Ver mais bilhetes';}
 function showToast(message){const element=document.getElementById('toast');element.textContent=message;element.style.display='block';clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>element.style.display='none',2200);}
-document.getElementById('menuButton').addEventListener('click',()=>document.getElementById('menuPanel').classList.toggle('open'));
+const menuButton = document.getElementById('menuButton');
+const menuPanel = document.getElementById('menuPanel');
+const menuClose = document.getElementById('menuClose');
+function openMainMenu(){menuPanel.classList.add('open');menuPanel.setAttribute('aria-hidden','false');menuButton.setAttribute('aria-expanded','true');document.body.classList.add('menu-open');}
+function closeMainMenu(){menuPanel.classList.remove('open');menuPanel.setAttribute('aria-hidden','true');menuButton.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open');}
+menuButton.addEventListener('click',openMainMenu);
+menuClose.addEventListener('click',closeMainMenu);
+menuPanel.addEventListener('click',event=>{if(event.target===menuPanel)closeMainMenu();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menuPanel.classList.contains('open'))closeMainMenu();});
 const endTime=new Date('2026-11-27T01:00:00-03:00').getTime();
 function updateCountdown(){let remaining=Math.max(0,endTime-Date.now());const hours=Math.floor(remaining/3600000);const minutes=Math.floor((remaining%3600000)/60000);const seconds=Math.floor((remaining%60000)/1000);document.getElementById('countdown').textContent=[hours,minutes,seconds].map(v=>String(v).padStart(2,'0')).join(':');}
 setSlide(0);renderQuantity();renderTickets();updateCountdown();window.setInterval(updateCountdown,1000);
