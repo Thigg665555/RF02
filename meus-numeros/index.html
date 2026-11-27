@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111111">
   <meta name="description" content="Minhas Compras">
-  <title>Minhas Compras - Nome</title>
+  <title>Minhas Compras | Rural Brutos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -262,6 +262,189 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; }
     }
+  
+
+    /* Ajustes de responsividade para celulares */
+    html { -webkit-text-size-adjust: 100%; }
+    body { overflow-x: hidden; }
+    .content-panel { min-width: 0; }
+    .search-button { min-height: 36px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .menu-button { width: 42px; height: 42px; touch-action: manipulation; }
+    .menu-panel a { min-height: 42px; display: flex; align-items: center; }
+
+    /* Modal de telefone */
+    .phone-modal-backdrop {
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      padding-top: max(18px, env(safe-area-inset-top));
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+      background: rgba(0, 0, 0, .62);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    .phone-modal-backdrop.open { display: flex; }
+    .phone-modal {
+      position: relative;
+      width: min(100%, 390px);
+      max-height: min(90svh, 560px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 22px;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 14px;
+      background: #fff;
+      color: #171717;
+      box-shadow: 0 18px 55px rgba(0,0,0,.28);
+    }
+    .phone-modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 8px;
+    }
+    .phone-modal-title {
+      margin: 0;
+      color: #171717;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+    .phone-modal-close {
+      display: inline-flex;
+      flex: 0 0 36px;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      margin: -7px -7px 0 0;
+      border-radius: 8px;
+      background: #f1f1f1;
+      color: #333;
+      font-size: 23px;
+      line-height: 1;
+    }
+    .phone-modal-description {
+      margin: 0 0 20px;
+      color: #626262;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .phone-field-label {
+      display: block;
+      margin: 0 0 7px;
+      color: #333;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+    .phone-input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      height: 48px;
+      padding: 0 13px;
+      border: 1px solid #d4d9df;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+      color: #171717;
+      font-family: inherit;
+      font-size: 16px;
+      line-height: 1;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .phone-input::placeholder { color: #9299a1; }
+    .phone-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(25,118,210,.13);
+    }
+    .phone-hint {
+      margin: 7px 0 0;
+      color: #777;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .phone-modal-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 46px;
+      margin: 18px 0 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      touch-action: manipulation;
+    }
+    .phone-modal-submit:focus-visible, .phone-modal-close:focus-visible {
+      outline: 2px solid #155ca5;
+      outline-offset: 2px;
+    }
+    .phone-modal-message {
+      display: none;
+      margin: 12px 0 0;
+      padding: 10px 11px;
+      border-radius: 7px;
+      background: #fff2c9;
+      color: #594713;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .phone-modal-message.show { display: block; }
+
+    @media (max-width: 450px) {
+      .topbar { flex-basis: 54px; height: 54px; }
+      .topbar-inner { height: 54px; padding: 5px 10px 0; }
+      main { min-height: calc(100svh - 116px); }
+      .content-panel {
+        min-height: calc(100svh - 116px);
+        margin-top: -9px;
+        margin-bottom: 9px;
+        padding: 10px;
+        border-radius: 12px 12px 0 0;
+      }
+      .title-row { min-height: 40px; height: auto; gap: 8px; margin-bottom: 12px; }
+      .title { font-size: 14px; line-height: 18px; white-space: normal; }
+      .title .bolt { font-size: 15px; }
+      .search-button { min-width: 126px; min-height: 38px; padding: 0 10px; font-size: 11px; }
+      .search-button svg { width: 13px; height: 13px; flex-basis: 13px; }
+      .notice-tip { min-height: 38px; padding: 8px 9px; font-size: 11px; line-height: 1.4; }
+      .notice-tip svg, .notice-safety > svg { width: 14px; height: 14px; flex-basis: 14px; }
+      .notice-safety { min-height: 0; padding: 10px 9px; gap: 7px; }
+      .safety-copy strong { font-size: 13px; line-height: 17px; margin-bottom: 3px; }
+      .safety-copy p { font-size: 11px; line-height: 1.45; margin: 1px 0; }
+      .search-bottom { margin-top: 12px; }
+      .search-bottom .search-button { width: min(100%, 260px); min-height: 42px; font-size: 12px; }
+      footer { flex-basis: 58px; min-height: 58px; font-size: 10px; }
+    }
+    @media (max-width: 360px) {
+      .content-panel { padding: 9px 8px; }
+      .title-row { align-items: center; gap: 5px; }
+      .title { font-size: 12px; gap: 4px; }
+      .search-button { min-width: 116px; padding: 0 7px; font-size: 10px; }
+      .notice-tip { font-size: 10px; }
+      .safety-copy p { font-size: 10px; }
+      .phone-modal { padding: 18px; }
+    }
+    @media (max-width: 320px) {
+      .title-row { flex-wrap: wrap; }
+      .title { flex: 1 1 100%; }
+      .title-row > .search-button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .phone-input { transition: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -274,7 +457,7 @@
       </button>
     </div>
     <nav class="menu-panel" id="menuPanel" aria-label="Menu da campanha">
-      <a href="/minhas-compras">Meus números</a>
+      <a href="/minhas-compras">Minhas Compras</a>
       <a href="/campanhas">Campanhas</a>
       <a href="/ganhadores">Ganhadores</a>
     </nav>
@@ -284,7 +467,7 @@
     <section class="content-panel" aria-labelledby="pageTitle">
       <div class="title-row">
         <h1 class="title" id="pageTitle"><span class="bolt" aria-hidden="true">ϟ</span> Minhas Compras</h1>
-        <button class="search-button" type="button" aria-label="Buscar Compras">
+        <button class="search-button" type="button" aria-label="Buscar Compras" data-open-phone-modal>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 4.99L20.49 19zM9.5 14a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9"/></svg>
           Buscar Compras
         </button>
@@ -307,7 +490,7 @@
       </section>
 
       <div class="search-bottom">
-        <button class="search-button" type="button" aria-label="Buscar Compras">
+        <button class="search-button" type="button" aria-label="Buscar Compras" data-open-phone-modal>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 4.99L20.49 19zM9.5 14a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9"/></svg>
           Buscar Compras
         </button>
@@ -315,7 +498,25 @@
     </section>
   </main>
 
-  <footer>Copyright © 2026 Nome.</footer>
+  <footer>Copyright © 2026 Rural Brutos.</footer>
+
+
+  <div class="phone-modal-backdrop" id="phoneModal" aria-hidden="true">
+    <section class="phone-modal" role="dialog" aria-modal="true" aria-labelledby="phoneModalTitle" aria-describedby="phoneModalDescription">
+      <div class="phone-modal-head">
+        <h2 class="phone-modal-title" id="phoneModalTitle">Buscar minhas compras</h2>
+        <button class="phone-modal-close" id="closePhoneModal" type="button" aria-label="Fechar">×</button>
+      </div>
+      <p class="phone-modal-description" id="phoneModalDescription">Informe o telefone utilizado na compra para localizar seus pedidos.</p>
+      <form id="phoneLookupForm" novalidate>
+        <label class="phone-field-label" for="lookupPhone">Número de telefone</label>
+        <input class="phone-input" id="lookupPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="phoneHint phoneModalMessage" required>
+        <p class="phone-hint" id="phoneHint">Digite o DDD e o número de celular ou telefone.</p>
+        <button class="phone-modal-submit" type="submit">Continuar</button>
+        <p class="phone-modal-message" id="phoneModalMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
 
   <script>
     const menuButton = document.getElementById('menuButton');
@@ -330,6 +531,77 @@
         menuButton.setAttribute('aria-expanded', 'false');
       }
     });
+
+
+    // Modal de telefone: os dois botões abrem a mesma janela.
+    const phoneModal = document.getElementById('phoneModal');
+    const closePhoneModal = document.getElementById('closePhoneModal');
+    const phoneLookupForm = document.getElementById('phoneLookupForm');
+    const lookupPhone = document.getElementById('lookupPhone');
+    const phoneModalMessage = document.getElementById('phoneModalMessage');
+    let lastModalOpener = null;
+
+    function openPhoneModal(event) {
+      lastModalOpener = event.currentTarget;
+      phoneModal.classList.add('open');
+      phoneModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      phoneModalMessage.classList.remove('show');
+      phoneModalMessage.textContent = '';
+      window.setTimeout(() => lookupPhone.focus(), 40);
+    }
+
+    function closePhoneDialog() {
+      phoneModal.classList.remove('open');
+      phoneModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastModalOpener) lastModalOpener.focus();
+    }
+
+    document.querySelectorAll('[data-open-phone-modal]').forEach((button) => {
+      button.addEventListener('click', openPhoneModal);
+    });
+    closePhoneModal.addEventListener('click', closePhoneDialog);
+    phoneModal.addEventListener('click', (event) => {
+      if (event.target === phoneModal) closePhoneDialog();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && phoneModal.classList.contains('open')) {
+        closePhoneDialog();
+      }
+    });
+
+    function formatBrazilPhone(value) {
+      const digits = value.replace(/\D/g, '').slice(0, 11);
+      if (!digits) return '';
+      if (digits.length <= 2) return '(' + digits;
+      const area = digits.slice(0, 2);
+      const local = digits.slice(2);
+      const firstPartLength = local.length > 8 ? 5 : 4;
+      if (local.length <= firstPartLength) return '(' + area + ') ' + local;
+      return '(' + area + ') ' + local.slice(0, firstPartLength) + '-' + local.slice(firstPartLength);
+    }
+
+    lookupPhone.addEventListener('input', () => {
+      lookupPhone.value = formatBrazilPhone(lookupPhone.value);
+      lookupPhone.setCustomValidity('');
+      phoneModalMessage.classList.remove('show');
+    });
+
+    phoneLookupForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const digits = lookupPhone.value.replace(/\D/g, '');
+      if (digits.length !== 10 && digits.length !== 11) {
+        phoneModalMessage.textContent = 'Confira o telefone. Informe o DDD e um número com 10 ou 11 dígitos.';
+        phoneModalMessage.classList.add('show');
+        lookupPhone.focus();
+        return;
+      }
+      // Não existe integração de consulta nesta página estática; não enviamos nem armazenamos o telefone.
+      phoneModalMessage.textContent = 'Telefone preenchido. Para exibir as compras, ainda é necessário conectar esta página ao sistema de pedidos.';
+      phoneModalMessage.classList.add('show');
+    });
+
   </script>
 </body>
 </html>
