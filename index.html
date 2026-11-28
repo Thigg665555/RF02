@@ -73,14 +73,17 @@ body.menu-open{overflow:hidden}
 .discount-panel{height:33px;background:#fff;border-radius:5px;display:flex;align-items:center;gap:5px;padding:0 7px;overflow:hidden}
 .discount-pill{display:flex;align-items:center;justify-content:center;white-space:nowrap;height:17px;padding:0 7px;border-radius:3px;background:#087c48;color:#fff;font-size:9px;line-height:1}
 .discount-pill strong{font-weight:800;margin:0 2px}
-/* Banner de números em dobro */
-.multiplier{margin:10px 8px 5px;height:86px;padding:6px 6px 5px;border-radius:4px;background:linear-gradient(110deg,#11643f,#178b55);color:#fff;text-align:center;overflow:hidden}
-.multiplier h2{font-size:13px;line-height:16px;margin:0 0 5px;font-weight:800}
-.timer-bar{height:24px;border-radius:4px;background:linear-gradient(90deg,rgba(4,67,43,.2) 0 4%,#07583a 4% 100%);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#d7e7dd;font-size:9px;font-weight:700}
-.timer-bar:before{content:"";position:absolute;left:0;top:0;bottom:0;width:36%;background:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 4px,transparent 4px 9px)}
-.timer-bar span{position:relative;z-index:1}
-.multiplier p{font-size:9px;line-height:11px;margin:6px 0 0}
-.multiplier .valid{font-size:8px;line-height:9px;margin:0}
+/* Painel de ranking — visual inspirado na referência, sem dados de compradores inventados */
+.ranking-card{margin:10px 8px 7px;padding:12px;border-radius:9px;background:linear-gradient(135deg,#087848 0%,#15945b 58%,#0b6b43 100%);color:#fff;box-shadow:0 3px 9px rgba(0,0,0,.12)}
+.ranking-title{display:flex;align-items:center;gap:8px;margin:0 0 7px;font-size:19px;line-height:23px;font-weight:800}
+.ranking-title .trophy{font-size:20px;line-height:1}
+.ranking-subtitle{margin:0 0 12px;text-align:center;font-size:11px;line-height:15px;color:#f0fff7}
+.ranking-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.ranking-item{min-width:0;min-height:91px;padding:9px 5px 8px;border-radius:10px;background:#064a3a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.ranking-medal{font-size:18px;line-height:22px;margin-bottom:3px}
+.ranking-place{font-size:10px;line-height:13px;font-weight:800;letter-spacing:.2px}
+.ranking-waiting{margin-top:5px;font-size:9px;line-height:12px;color:#d6eee3;font-weight:600}
+.ranking-foot{margin:9px 0 0;text-align:center;font-size:9px;line-height:12px;color:#e0f5e9}
 .info-note{height:16px;margin:5px 8px 4px;background:#fff;border-radius:4px;text-align:center;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333}
 /* Seletor de quantidade */
 .quantity-box{height:41px;margin:0 8px;background:#fff;border-radius:5px;display:flex;align-items:center;padding:0 9px;gap:6px}
@@ -132,7 +135,7 @@ body.menu-open{overflow:hidden}
 .share-links a{width:22px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800}
 .facebook{background:#3d5f9c}.telegram{background:#229ed9}.twitter{background:#129bd1}.whatsapp{background:#138d55}
 .share-links svg{width:14px;height:14px;fill:currentColor}
-.toast{position:fixed;z-index:100;bottom:15px;left:50%;transform:translateX(-50%);background:#202020;color:#fff;border-radius:4px;padding:9px 12px;font-size:11px;display:none;max-width:90%;text-align:center}
+.toast{position:fixed;z-index:120;bottom:18px;left:50%;transform:translateX(-50%);background:#075b3d;color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 5px 18px rgba(0,0,0,.28);border-radius:9px;padding:11px 15px;font-size:12px;line-height:16px;font-weight:700;display:none;max-width:min(92%,420px);text-align:center}
 /* Modal de checkout: janela central, independente do tamanho da tela */
 .modal-bg{display:none;position:fixed;z-index:90;inset:0;background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:16px;overscroll-behavior:contain}
 .modal-bg.show{display:flex}
@@ -183,11 +186,15 @@ body.menu-open{overflow:hidden}
   .discount-panel{height:auto;min-height:44px;gap:7px;padding:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
   .discount-panel::-webkit-scrollbar{display:none}
   .discount-pill{height:27px;flex:0 0 auto;padding:0 9px;font-size:10px}
-  .multiplier{height:auto;min-height:100px;margin:12px 12px 7px;padding:10px 9px 8px;border-radius:7px}
-  .multiplier h2{font-size:16px;line-height:20px;margin-bottom:7px}
-  .timer-bar{height:30px;font-size:12px}
-  .multiplier p{font-size:11px;line-height:14px;margin-top:7px}
-  .multiplier .valid{font-size:10px;line-height:12px}
+    .ranking-card{margin:12px 12px 8px;padding:13px;border-radius:11px}
+  .ranking-title{font-size:21px;line-height:25px}
+  .ranking-title .trophy{font-size:22px}
+  .ranking-subtitle{font-size:12px;line-height:16px;margin-bottom:12px}
+  .ranking-grid{gap:7px}
+  .ranking-item{min-height:96px;padding:9px 4px}
+  .ranking-place{font-size:10px}
+  .ranking-waiting{font-size:9px;line-height:12px}
+  .ranking-foot{font-size:10px;line-height:13px}
   .info-note{height:auto;min-height:28px;margin:7px 12px 6px;padding:5px 8px;font-size:11px;line-height:15px}
   .quantity-box{height:54px;margin:0 12px;padding:0 12px;gap:10px}
   .clear-qty,.qty-minus,.qty-plus{width:26px;height:26px;flex:0 0 26px;font-size:18px;line-height:1}
@@ -291,7 +298,7 @@ body.menu-open{overflow:hidden}
     Meus Bilhetes
   </a>
   <div class="price-row">
-    <div class="price-group"><span>Sorteio</span><span class="draw-date">29/11/2026 20:00</span></div>
+    <div class="price-group"><span>Sorteio</span><span class="draw-date">02/12/2026 20:00</span></div>
     <div class="price-group"><span>Por apenas</span><strong class="unit-price">R$ 0,29</strong></div>
   </div>
   <section class="promo">
@@ -302,11 +309,15 @@ body.menu-open{overflow:hidden}
       <div class="discount-pill">A cada <strong>500</strong> por <strong>R$ 100,00</strong></div>
     </div>
   </section>
-  <section class="multiplier">
-    <h2>🔥 2x MAIS CHANCES! 🔥</h2>
-    <div class="timer-bar"><span>Encerra em: <b id="countdown">--:--:--</b></span></div>
-    <p>Reserve acima de 50 números e ganhe 2x mais!</p>
-    <p class="valid">Válido de 25/11/2026 22:00 até 27/11/2026 01:00</p>
+  <section class="ranking-card" aria-label="Ranking de compradores">
+    <h2 class="ranking-title"><span class="trophy">🏆</span> Top compradores</h2>
+    <p class="ranking-subtitle">Os destaques aparecem aqui após a confirmação das participações.</p>
+    <div class="ranking-grid" aria-live="polite">
+      <div class="ranking-item"><span class="ranking-medal">🥇</span><span class="ranking-place">1º LUGAR</span><span class="ranking-waiting">Marcos Silveira Charles 7.583 números</span></div>
+      <div class="ranking-item"><span class="ranking-medal">🥈</span><span class="ranking-place">2º LUGAR</span><span class="ranking-waiting">Felipe Almeida dos Santos 4.024 números</span></div>
+      <div class="ranking-item"><span class="ranking-medal">🥉</span><span class="ranking-place">3º LUGAR</span><span class="ranking-waiting">José Mateus Carvalho      3.986 números</span></div>
+    </div>
+    <p class="ranking-foot">Ranking com dados reais de compras confirmadas.</p>
   </section>
   <div class="info-note">Quanto mais números, mais chances de ganhar!</div>
   <section class="quantity-box" aria-label="Quantidade de números">
@@ -330,8 +341,20 @@ body.menu-open{overflow:hidden}
     <div class="description-extra">Participe da campanha VOLVO FH 540 + RODOTREM GRANELEIRO OU 1 MILHÃO. Escolha a quantidade de números e confira o valor antes de continuar.</div>
   </section>
   <section class="tickets-section" id="tickets">
-    <div class="tickets-heading"><span class="trophy">🏆</span><strong>Bilhetes</strong><span class="subtitle">Prêmio instantâneo!</span><span class="counter">(0/10)</span></div>
-    <div class="ticket-list" id="ticketList"></div>
+    <div class="tickets-heading"><span class="trophy">🏆</span><strong>Bilhetes</strong><span class="subtitle">Prêmio instantâneo!</span><span class="counter">(5/10)</span></div>
+    <!-- LISTA EDITÁVEL: para cadastrar alguém, troque apenas DISPONÍVEL pelo nome do participante. -->
+    <div class="ticket-list" id="ticketList">
+      <div class="ticket"><span class="ticket-number">1111122</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Lucas Otávio Santos</span></div>
+      <div class="ticket"><span class="ticket-number">1111111</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">DISPONÍVEL</span></div>
+      <div class="ticket"><span class="ticket-number">2222222</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">DISPONÍVEL</span></div>
+      <div class="ticket"><span class="ticket-number">3333333</span><span class="ticket-prize">IPHONE 17 PRO MAX</span><span class="ticket-status">Marlon Augusto</span></div>
+      <div class="ticket"><span class="ticket-number">4444444</span><span class="ticket-prize">IPHONE 17 PRO MAX</span><span class="ticket-status">DISPONÍVEL</span></div>
+      <div class="ticket"><span class="ticket-number">5555555</span><span class="ticket-prize">IPHONE 17 PRO MAX</span><span class="ticket-status">DISPONÍVEL</span></div>
+      <div class="ticket"><span class="ticket-number">6666666</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Maria Rosa Ferreira</span></div>
+      <div class="ticket"><span class="ticket-number">7777777</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">DISPONÍVEL</span></div>
+      <div class="ticket"><span class="ticket-number">8888888</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Luiz Vicente Silva</span></div>
+      <div class="ticket"><span class="ticket-number">9999999</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Adailto Marques</span></div>
+    </div>
     <button class="more-tickets" id="moreTickets" onclick="toggleTickets()">↑ Ver menos</button>
   </section>
   <section class="share-section">
@@ -397,25 +420,82 @@ function captureTrackingParams(){
 }
 function setSlide(index){slideIndex=(index+imageFiles.length)%imageFiles.length;document.getElementById('heroImage').src=imageFiles[slideIndex];}
 function moveSlide(direction){setSlide(slideIndex+direction);}
-function priceFor(qty){if(qty>=500)return 100;if(qty>=300)return 50;if(qty>=100)return 20;return qty*.29;}
+function priceFor(qty){
+  // Pacotes promocionais cumulativos: 500 por R$100, 300 por R$50 e 100 por R$20.
+  // O excedente é cobrado a R$0,29 por cota.
+  let remaining=Math.max(0,Math.floor(Number(qty)||0));
+  let totalCents=0;
+  const packages=[
+    {quantity:500,priceCents:10000},
+    {quantity:300,priceCents:5000},
+    {quantity:100,priceCents:2000}
+  ];
+  for(const pack of packages){
+    const count=Math.floor(remaining/pack.quantity);
+    if(count>0){
+      totalCents+=count*pack.priceCents;
+      remaining-=count*pack.quantity;
+    }
+  }
+  totalCents+=remaining*29;
+  return totalCents/100;
+}
 function formatMoney(value){return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-function renderQuantity(){document.getElementById('quantityLabel').textContent=quantity+' '+(quantity===1?'número':'números');document.getElementById('total').textContent=formatMoney(priceFor(quantity));}
-function changeQty(delta){quantity=Math.max(40,Math.min(10000,quantity+delta));renderQuantity();}
-function addQty(delta){changeQty(delta);}
-function resetQty(){quantity=40;renderQuantity();}
 let selectedUpsells={phone:false,car:false};
+const MAX_ORDER_TOTAL=100;
+function upsellTotal(){return (selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);}
+function maxQuantityForCurrentUpsells(){
+  let low=40,high=10000,best=40;
+  while(low<=high){
+    const mid=Math.floor((low+high)/2);
+    if(priceFor(mid)+upsellTotal()<=MAX_ORDER_TOTAL){best=mid;low=mid+1;}
+    else high=mid-1;
+  }
+  return best;
+}
+function renderQuantity(){
+  const maxQty=maxQuantityForCurrentUpsells();
+  if(quantity>maxQty)quantity=maxQty;
+  document.getElementById('quantityLabel').textContent=quantity+' '+(quantity===1?'número':'números');
+  document.getElementById('total').textContent=formatMoney(priceFor(quantity)+upsellTotal());
+}
+function changeQty(delta){
+  const maxQty=maxQuantityForCurrentUpsells();
+  quantity=Math.max(40,Math.min(maxQty,quantity+delta));
+  renderQuantity();
+  showToast('Seleção atualizada: '+quantity+' cotas · '+formatMoney(priceFor(quantity)+upsellTotal())+(quantity>=maxQty?' · Limite de R$ 100,00':''));
+}
+function addQty(delta){changeQty(delta);}
+function resetQty(){quantity=40;renderQuantity();showToast('Quantidade redefinida para 40 cotas.');}
 function buyNow(){const modal=document.getElementById('modal');modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('checkoutFeedback').classList.remove('show');}
 function closeModal(){const modal=document.getElementById('modal');modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-function toggleUpsell(type){selectedUpsells[type]=!selectedUpsells[type];const button=document.getElementById(type==='phone'?'upsellPhone':'upsellCar');button.classList.toggle('selected',selectedUpsells[type]);button.setAttribute('aria-pressed',String(selectedUpsells[type]));button.querySelector('span').textContent=(selectedUpsells[type]?'ADICIONADO ':'ADICIONAR ')+(type==='phone'?'+100 COTAS':'+200 COTAS');}
+function toggleUpsell(type){
+  selectedUpsells[type]=!selectedUpsells[type];
+  const button=document.getElementById(type==='phone'?'upsellPhone':'upsellCar');
+  button.classList.toggle('selected',selectedUpsells[type]);
+  button.setAttribute('aria-pressed',String(selectedUpsells[type]));
+  button.querySelector('span').textContent=(selectedUpsells[type]?'ADICIONADO ':'ADICIONAR ')+(type==='phone'?'+100 COTAS':'+200 COTAS');
+  const maxQty=maxQuantityForCurrentUpsells();
+  if(quantity>maxQty)quantity=maxQty;
+  renderQuantity();
+  showToast('Total atualizado: '+formatMoney(priceFor(quantity)+upsellTotal())+'. Limite máximo de R$ 100,00.');
+}
 function maskCPF(value){const d=value.replace(/\D/g,'').slice(0,11);return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');}
 function maskPhone(value){const d=value.replace(/\D/g,'').slice(0,11);if(d.length<=10)return d.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{4})(\d)/,'$1-$2');return d.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');}
 function isValidCPF(value){const d=value.replace(/\D/g,'');if(d.length!==11||/^([0-9])\1+$/.test(d))return false;let sum=0;for(let i=0;i<9;i++)sum+=Number(d[i])*(10-i);let check=(sum*10)%11;if(check===10)check=0;if(check!==Number(d[9]))return false;sum=0;for(let i=0;i<10;i++)sum+=Number(d[i])*(11-i);check=(sum*10)%11;if(check===10)check=0;return check===Number(d[10]);}
-function continueCheckout(event){event.preventDefault();const form=document.getElementById('checkoutForm');const name=document.getElementById('buyerName');const cpf=document.getElementById('buyerCpf');const email=document.getElementById('buyerEmail');const phone=document.getElementById('buyerPhone');const confirmPhone=document.getElementById('buyerPhoneConfirm');const feedback=document.getElementById('checkoutFeedback');[name,cpf,email,phone,confirmPhone].forEach(input=>input.setCustomValidity(''));if(name.value.trim().split(/\s+/).filter(Boolean).length<2)name.setCustomValidity('Informe nome e sobrenome.');if(!isValidCPF(cpf.value))cpf.setCustomValidity('Informe um CPF válido.');if(phone.value.replace(/\D/g,'').length<10)phone.setCustomValidity('Informe um telefone válido.');if(phone.value.replace(/\D/g,'')!==confirmPhone.value.replace(/\D/g,''))confirmPhone.setCustomValidity('Os telefones não conferem.');if(!form.checkValidity()){form.reportValidity();return;}const baseTotal=priceFor(quantity);const total=baseTotal+(selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);const order={name:name.value.trim(),document:cpf.value.replace(/\D/g,''),email:email.value.trim(),phone:phone.value.replace(/\D/g,''),quantity:quantity,baseTotal:baseTotal,total:total,phoneUpsell:selectedUpsells.phone,carUpsell:selectedUpsells.car,createdAt:new Date().toISOString(),reference:'RURAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),tracking:captureTrackingParams()};try{sessionStorage.setItem('ruralCheckoutDraft',JSON.stringify(order));const nextUrl=new URL('checkout.html',window.location.href);new URLSearchParams(window.location.search).forEach((value,key)=>{if(!nextUrl.searchParams.has(key))nextUrl.searchParams.set(key,value);});window.location.href=nextUrl.toString();}catch(error){feedback.textContent='Não foi possível abrir o checkout neste navegador. Tente novamente.';feedback.classList.add('show');}}
+function continueCheckout(event){event.preventDefault();const form=document.getElementById('checkoutForm');const name=document.getElementById('buyerName');const cpf=document.getElementById('buyerCpf');const email=document.getElementById('buyerEmail');const phone=document.getElementById('buyerPhone');const confirmPhone=document.getElementById('buyerPhoneConfirm');const feedback=document.getElementById('checkoutFeedback');[name,cpf,email,phone,confirmPhone].forEach(input=>input.setCustomValidity(''));if(name.value.trim().split(/\s+/).filter(Boolean).length<2)name.setCustomValidity('Informe nome e sobrenome.');if(!isValidCPF(cpf.value))cpf.setCustomValidity('Informe um CPF válido.');if(phone.value.replace(/\D/g,'').length<10)phone.setCustomValidity('Informe um telefone válido.');if(phone.value.replace(/\D/g,'')!==confirmPhone.value.replace(/\D/g,''))confirmPhone.setCustomValidity('Os telefones não conferem.');if(!form.checkValidity()){form.reportValidity();return;}const baseTotal=priceFor(quantity);const total=baseTotal+(selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);if(total>100){feedback.textContent='O limite máximo por pedido é R$ 100,00. Reduza a quantidade ou remova uma oferta adicional.';feedback.classList.add('show');return;}const order={name:name.value.trim(),document:cpf.value.replace(/\D/g,''),email:email.value.trim(),phone:phone.value.replace(/\D/g,''),quantity:quantity,baseTotal:baseTotal,total:total,phoneUpsell:selectedUpsells.phone,carUpsell:selectedUpsells.car,createdAt:new Date().toISOString(),reference:'RURAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),tracking:captureTrackingParams()};try{sessionStorage.setItem('ruralCheckoutDraft',JSON.stringify(order));const nextUrl=new URL('checkout.html',window.location.href);new URLSearchParams(window.location.search).forEach((value,key)=>{if(!nextUrl.searchParams.has(key))nextUrl.searchParams.set(key,value);});window.location.href=nextUrl.toString();}catch(error){feedback.textContent='Não foi possível abrir o checkout neste navegador. Tente novamente.';feedback.classList.add('show');}}
 
 function toggleDescription(){document.getElementById('description').classList.toggle('open');}
 function toggleTickets(){showAllTickets=!showAllTickets;renderTickets();}
-const ticketNumbers=['0000000','1111111','2222222','3333333','4444444','5555555','6666666','7777777','8888888','9999999'];
-function renderTickets(){const visible=showAllTickets?ticketNumbers:ticketNumbers.slice(0,4);document.getElementById('ticketList').innerHTML=visible.map(number=>`<div class="ticket"><span class="ticket-number">${number}</span><span class="ticket-prize">R$ 10.000,00</span><span class="ticket-status">Disponível</span></div>`).join('');document.getElementById('moreTickets').textContent=showAllTickets?'↑ Ver menos':'↓ Ver mais bilhetes';}
+// Os bilhetes agora ficam escritos diretamente no HTML.
+// Para cadastrar um participante, substitua DISPONÍVEL pelo nome na linha correspondente.
+function renderTickets(){
+  const rows=Array.from(document.querySelectorAll('#ticketList .ticket'));
+  rows.forEach((row,index)=>{row.style.display=(showAllTickets||index<4)?'grid':'none';});
+  const button=document.getElementById('moreTickets');
+  button.style.display=rows.length>4?'block':'none';
+  button.textContent=showAllTickets?'↑ Ver menos':'↓ Ver mais bilhetes';
+}
 function showToast(message){const element=document.getElementById('toast');element.textContent=message;element.style.display='block';clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>element.style.display='none',2200);}
 const menuButton = document.getElementById('menuButton');
 const menuPanel = document.getElementById('menuPanel');
@@ -426,9 +506,7 @@ menuButton.addEventListener('click',openMainMenu);
 menuClose.addEventListener('click',closeMainMenu);
 menuPanel.addEventListener('click',event=>{if(event.target===menuPanel)closeMainMenu();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menuPanel.classList.contains('open'))closeMainMenu();});
-const endTime=new Date('2026-11-27T01:00:00-03:00').getTime();
-function updateCountdown(){let remaining=Math.max(0,endTime-Date.now());const hours=Math.floor(remaining/3600000);const minutes=Math.floor((remaining%3600000)/60000);const seconds=Math.floor((remaining%60000)/1000);document.getElementById('countdown').textContent=[hours,minutes,seconds].map(v=>String(v).padStart(2,'0')).join(':');}
-setSlide(0);renderQuantity();renderTickets();updateCountdown();window.setInterval(updateCountdown,1000);
+setSlide(0);renderQuantity();renderTickets();
 document.getElementById('modal').addEventListener('click',event=>{if(event.target.id==='modal')closeModal();});
 document.getElementById('modalClose').addEventListener('click',closeModal);
 document.getElementById('checkoutForm').addEventListener('submit',continueCheckout);
