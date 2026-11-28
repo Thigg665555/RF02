@@ -315,7 +315,7 @@ body.menu-open{overflow:hidden}
     <div class="ranking-grid" aria-live="polite">
       <div class="ranking-item"><span class="ranking-medal">🥇</span><span class="ranking-place">1º LUGAR</span><span class="ranking-waiting">Marcos Silveira Charles 7.583 números</span></div>
       <div class="ranking-item"><span class="ranking-medal">🥈</span><span class="ranking-place">2º LUGAR</span><span class="ranking-waiting">Felipe Almeida dos Santos 4.024 números</span></div>
-      <div class="ranking-item"><span class="ranking-medal">🥉</span><span class="ranking-place">3º LUGAR</span><span class="ranking-waiting">José Mateus Carvalho      3.986 números</span></div>
+      <div class="ranking-item"><span class="ranking-medal">🥉</span><span class="ranking-place">3º LUGAR</span><span class="ranking-waiting">José Mateus Carvalho 3.986 números</span></div>
     </div>
     <p class="ranking-foot">Ranking com dados reais de compras confirmadas.</p>
   </section>
@@ -441,49 +441,18 @@ function priceFor(qty){
   return totalCents/100;
 }
 function formatMoney(value){return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-let selectedUpsells={phone:false,car:false};
-const MAX_ORDER_TOTAL=100;
-function upsellTotal(){return (selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);}
-function maxQuantityForCurrentUpsells(){
-  let low=40,high=10000,best=40;
-  while(low<=high){
-    const mid=Math.floor((low+high)/2);
-    if(priceFor(mid)+upsellTotal()<=MAX_ORDER_TOTAL){best=mid;low=mid+1;}
-    else high=mid-1;
-  }
-  return best;
-}
-function renderQuantity(){
-  const maxQty=maxQuantityForCurrentUpsells();
-  if(quantity>maxQty)quantity=maxQty;
-  document.getElementById('quantityLabel').textContent=quantity+' '+(quantity===1?'número':'números');
-  document.getElementById('total').textContent=formatMoney(priceFor(quantity)+upsellTotal());
-}
-function changeQty(delta){
-  const maxQty=maxQuantityForCurrentUpsells();
-  quantity=Math.max(40,Math.min(maxQty,quantity+delta));
-  renderQuantity();
-  showToast('Seleção atualizada: '+quantity+' cotas · '+formatMoney(priceFor(quantity)+upsellTotal())+(quantity>=maxQty?' · Limite de R$ 100,00':''));
-}
+function renderQuantity(){document.getElementById('quantityLabel').textContent=quantity+' '+(quantity===1?'número':'números');document.getElementById('total').textContent=formatMoney(priceFor(quantity));}
+function changeQty(delta){quantity=Math.max(40,Math.min(10000,quantity+delta));renderQuantity();showToast('Seleção atualizada: '+quantity+' cotas · '+formatMoney(priceFor(quantity)));}
 function addQty(delta){changeQty(delta);}
 function resetQty(){quantity=40;renderQuantity();showToast('Quantidade redefinida para 40 cotas.');}
+let selectedUpsells={phone:false,car:false};
 function buyNow(){const modal=document.getElementById('modal');modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('checkoutFeedback').classList.remove('show');}
 function closeModal(){const modal=document.getElementById('modal');modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-function toggleUpsell(type){
-  selectedUpsells[type]=!selectedUpsells[type];
-  const button=document.getElementById(type==='phone'?'upsellPhone':'upsellCar');
-  button.classList.toggle('selected',selectedUpsells[type]);
-  button.setAttribute('aria-pressed',String(selectedUpsells[type]));
-  button.querySelector('span').textContent=(selectedUpsells[type]?'ADICIONADO ':'ADICIONAR ')+(type==='phone'?'+100 COTAS':'+200 COTAS');
-  const maxQty=maxQuantityForCurrentUpsells();
-  if(quantity>maxQty)quantity=maxQty;
-  renderQuantity();
-  showToast('Total atualizado: '+formatMoney(priceFor(quantity)+upsellTotal())+'. Limite máximo de R$ 100,00.');
-}
+function toggleUpsell(type){selectedUpsells[type]=!selectedUpsells[type];const button=document.getElementById(type==='phone'?'upsellPhone':'upsellCar');button.classList.toggle('selected',selectedUpsells[type]);button.setAttribute('aria-pressed',String(selectedUpsells[type]));button.querySelector('span').textContent=(selectedUpsells[type]?'ADICIONADO ':'ADICIONAR ')+(type==='phone'?'+100 COTAS':'+200 COTAS');}
 function maskCPF(value){const d=value.replace(/\D/g,'').slice(0,11);return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');}
 function maskPhone(value){const d=value.replace(/\D/g,'').slice(0,11);if(d.length<=10)return d.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{4})(\d)/,'$1-$2');return d.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');}
 function isValidCPF(value){const d=value.replace(/\D/g,'');if(d.length!==11||/^([0-9])\1+$/.test(d))return false;let sum=0;for(let i=0;i<9;i++)sum+=Number(d[i])*(10-i);let check=(sum*10)%11;if(check===10)check=0;if(check!==Number(d[9]))return false;sum=0;for(let i=0;i<10;i++)sum+=Number(d[i])*(11-i);check=(sum*10)%11;if(check===10)check=0;return check===Number(d[10]);}
-function continueCheckout(event){event.preventDefault();const form=document.getElementById('checkoutForm');const name=document.getElementById('buyerName');const cpf=document.getElementById('buyerCpf');const email=document.getElementById('buyerEmail');const phone=document.getElementById('buyerPhone');const confirmPhone=document.getElementById('buyerPhoneConfirm');const feedback=document.getElementById('checkoutFeedback');[name,cpf,email,phone,confirmPhone].forEach(input=>input.setCustomValidity(''));if(name.value.trim().split(/\s+/).filter(Boolean).length<2)name.setCustomValidity('Informe nome e sobrenome.');if(!isValidCPF(cpf.value))cpf.setCustomValidity('Informe um CPF válido.');if(phone.value.replace(/\D/g,'').length<10)phone.setCustomValidity('Informe um telefone válido.');if(phone.value.replace(/\D/g,'')!==confirmPhone.value.replace(/\D/g,''))confirmPhone.setCustomValidity('Os telefones não conferem.');if(!form.checkValidity()){form.reportValidity();return;}const baseTotal=priceFor(quantity);const total=baseTotal+(selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);if(total>100){feedback.textContent='O limite máximo por pedido é R$ 100,00. Reduza a quantidade ou remova uma oferta adicional.';feedback.classList.add('show');return;}const order={name:name.value.trim(),document:cpf.value.replace(/\D/g,''),email:email.value.trim(),phone:phone.value.replace(/\D/g,''),quantity:quantity,baseTotal:baseTotal,total:total,phoneUpsell:selectedUpsells.phone,carUpsell:selectedUpsells.car,createdAt:new Date().toISOString(),reference:'RURAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),tracking:captureTrackingParams()};try{sessionStorage.setItem('ruralCheckoutDraft',JSON.stringify(order));const nextUrl=new URL('checkout.html',window.location.href);new URLSearchParams(window.location.search).forEach((value,key)=>{if(!nextUrl.searchParams.has(key))nextUrl.searchParams.set(key,value);});window.location.href=nextUrl.toString();}catch(error){feedback.textContent='Não foi possível abrir o checkout neste navegador. Tente novamente.';feedback.classList.add('show');}}
+function continueCheckout(event){event.preventDefault();const form=document.getElementById('checkoutForm');const name=document.getElementById('buyerName');const cpf=document.getElementById('buyerCpf');const email=document.getElementById('buyerEmail');const phone=document.getElementById('buyerPhone');const confirmPhone=document.getElementById('buyerPhoneConfirm');const feedback=document.getElementById('checkoutFeedback');[name,cpf,email,phone,confirmPhone].forEach(input=>input.setCustomValidity(''));if(name.value.trim().split(/\s+/).filter(Boolean).length<2)name.setCustomValidity('Informe nome e sobrenome.');if(!isValidCPF(cpf.value))cpf.setCustomValidity('Informe um CPF válido.');if(phone.value.replace(/\D/g,'').length<10)phone.setCustomValidity('Informe um telefone válido.');if(phone.value.replace(/\D/g,'')!==confirmPhone.value.replace(/\D/g,''))confirmPhone.setCustomValidity('Os telefones não conferem.');if(!form.checkValidity()){form.reportValidity();return;}const baseTotal=priceFor(quantity);const total=baseTotal+(selectedUpsells.phone?17:0)+(selectedUpsells.car?22:0);const order={name:name.value.trim(),document:cpf.value.replace(/\D/g,''),email:email.value.trim(),phone:phone.value.replace(/\D/g,''),quantity:quantity,baseTotal:baseTotal,total:total,phoneUpsell:selectedUpsells.phone,carUpsell:selectedUpsells.car,createdAt:new Date().toISOString(),reference:'RURAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),tracking:captureTrackingParams()};try{sessionStorage.setItem('ruralCheckoutDraft',JSON.stringify(order));const nextUrl=new URL('checkout.html',window.location.href);new URLSearchParams(window.location.search).forEach((value,key)=>{if(!nextUrl.searchParams.has(key))nextUrl.searchParams.set(key,value);});window.location.href=nextUrl.toString();}catch(error){feedback.textContent='Não foi possível abrir o checkout neste navegador. Tente novamente.';feedback.classList.add('show');}}
 
 function toggleDescription(){document.getElementById('description').classList.toggle('open');}
 function toggleTickets(){showAllTickets=!showAllTickets;renderTickets();}
